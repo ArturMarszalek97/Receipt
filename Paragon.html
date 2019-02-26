@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Zadanie 5</title>
+    <link rel="Stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>PARAGON 30-03-15/004</h1>
+  </header>
+  <main>
+    <table>
+      <thead>
+        <tr id="gora">
+          <th class="lp">LP</th>
+          <th class="nazwa">NAZWA</th>
+          <th>ILOŚĆ</th>
+          <th>CENA</th>
+          <th>SUMA</th>
+          <th><input type="button" value="edytuj" onclick="edytuj()"></th>
+          <th><input type="button" value="usuń" onclick="usun()"></th>
+          <th><input type="button" value="zamień" onclick="zamien()"></th>
+        </tr>
+      </thead>
+      <tbody id="szablon">        
+        <script>
+            localObj = {};
+            localObj.localArray = [];
+            
+          function dodaj(){
+              if(document.formularz.nazwa.value.length == 0 || document.formularz.ilosc.value <= 0 || document.formularz.cena.value <= 0)
+                  {
+                      alert("Wprowadzono złe dane! Proszę poprawić formularz. Sprawdź czy wypełniłeś wszystkie pola. Pola ilość i cena nie mogą być mniejsze lub równe 0.");
+                      return;
+                  }
+            var rodzic = document.getElementById("szablon");
+                  
+            var nowy = document.createElement("tr");
+            var ptd = document.createElement("td");
+            ptd.classList.add("lp");
+            var lp = document.createTextNode(localObj.localArray.length+1);
+            ptd.appendChild(lp);
+            nowy.appendChild(ptd);
+            
+            var dtd = document.createElement("td");
+            dtd.classList.add("nazwa");
+            var na = document.formularz.nazwa.value;
+            var _nazwa = document.createTextNode(na);
+            dtd.appendChild(_nazwa);
+            nowy.appendChild(dtd);
+            rodzic.appendChild(nowy);
+            
+            var ttd = document.createElement("td");
+            ttd.id  = "lp";
+            var il = document.formularz.ilosc.value;
+            var _ilosc = document.createTextNode(il);
+            ttd.appendChild(_ilosc);
+            nowy.appendChild(ttd);
+            rodzic.appendChild(nowy);
+            
+            var ctd = document.createElement("td");
+            var ce = document.formularz.cena.value;
+              var c = ce + " zł";
+            var _cena = document.createTextNode(c);
+            ctd.appendChild(_cena);
+            nowy.appendChild(ctd);
+            rodzic.appendChild(nowy);
+              
+              suma = parseFloat(suma) + parseFloat(ce);
+            
+            var pitd = document.createElement("td");
+            var _suma = document.createTextNode(suma);
+            pitd.appendChild(_suma);
+            nowy.appendChild(pitd);
+            rodzic.appendChild(nowy);           
+            
+            var test = document.getElementById("razem2");
+            rodzic.insertBefore(nowy, test);
+            rodzic.insertBefore(ptd, test);
+            rodzic.insertBefore(dtd, test);
+            rodzic.insertBefore(ttd, test);
+            rodzic.insertBefore(ctd, test);
+            rodzic.insertBefore(pitd, test);
+            
+            var obj = {
+              nazwa: na,
+              ilosc: il,
+              cena: ce
+            };
+                  
+              localObj.localArray.push(obj);
+              localStorage.localObj = JSON.stringify(localObj);
+              
+              location.reload();
+            
+          }
+            
+            var suma = 0;
+            
+            localObj = JSON.parse(localStorage.localObj);            
+
+            for(let i = 0; i < localObj.localArray.length; i++)
+                {
+                    var rodzic = document.getElementById("szablon");
+                    
+                    var odczyt = document.createElement("tr");
+                    var _ptd = document.createElement("td");
+                    _ptd.classList.add("lp");
+                    var _lp = document.createTextNode(i+1);
+                    _ptd.appendChild(_lp);
+                    odczyt.appendChild(_ptd);
+                    rodzic.appendChild(odczyt);
+                    
+                    var _dtd = document.createElement("td");
+                    _dtd.classList.add("nazwa");
+                    var _na = localObj.localArray[i].nazwa;
+                    var _nazwa_ = document.createTextNode(_na);
+                    _dtd.appendChild(_nazwa_);
+                    odczyt.appendChild(_dtd);
+                    rodzic.appendChild(odczyt);
+                    
+                    var ttd = document.createElement("td");
+                    ttd.id  = "lp";
+                    var il = localObj.localArray[i].ilosc;
+                    var _ilosc = document.createTextNode(il);
+                    ttd.appendChild(_ilosc);
+                    odczyt.appendChild(ttd);
+                    rodzic.appendChild(odczyt);
+                    
+                    var ctd = document.createElement("td");
+                    var ce = parseFloat(localObj.localArray[i].cena).toFixed(2) + " zł";
+                    var _cena = document.createTextNode(ce);
+                    ctd.appendChild(_cena);
+                    odczyt.appendChild(ctd);
+                    rodzic.appendChild(odczyt);
+                    
+                    suma = parseFloat(localObj.localArray[i].ilosc) * parseFloat(localObj.localArray[i].cena);
+                    suma = parseFloat(suma).toFixed(2) + " zł";
+            
+                    var pitd = document.createElement("td");
+                    var _suma = document.createTextNode(suma);
+                    pitd.appendChild(_suma);
+                    odczyt.appendChild(pitd);
+                    rodzic.appendChild(odczyt);                  
+                }
+            
+            function usun(){
+                var td = document.createElement("td");
+                var elem = document.createElement("INPUT");
+                elem.setAttribute("type", "number");
+                elem.setAttribute("size", "2");
+                elem.id = "wejscie";
+                td.appendChild(elem);
+                var rodzic = document.getElementById("gora");
+                rodzic.appendChild(td);
+                
+                var button = document.createElement("BUTTON");
+                var tresc = document.createTextNode("zatwierdź");
+                
+                button.onclick = function czysc(){
+                    var lp = document.getElementById("wejscie");
+                    if(lp.value < 1 || lp.value > localObj.localArray.length)
+                        {
+                            alert("Podana pozycja nie mieści się w przedziale LP!");
+                            return;
+                        }
+                    localObj.localArray.splice(lp.value - 1, 1);
+                    localStorage.localObj = JSON.stringify(localObj);
+                    
+                    location.reload();                  
+                };
+                
+                button.appendChild(tresc);
+                
+                var tdd = document.createElement("td");
+                tdd.appendChild(button);
+                               
+                rodzic.appendChild(tdd);        
+                
+            }
+            
+            function zamien(){
+                var td = document.createElement("td");
+                var element = document.createElement("INPUT");
+                element.setAttribute("type", "number");
+                element.setAttribute("size", "1");
+                element.id = "wejscie1";
+                td.appendChild(element);
+                var rodzic = document.getElementById("gora");
+                rodzic.appendChild(td);
+                
+                var tdd = document.createElement("td");
+                var el = document.createElement("INPUT");
+                el.setAttribute("type", "number");
+                el.setAttribute("size", "1");
+                el.id = "wejscie2";
+                tdd.appendChild(el);
+                var rodzic = document.getElementById("gora");
+                rodzic.appendChild(tdd);
+                
+                var przycisk = document.createElement("BUTTON");
+                var tresc = document.createTextNode("zatwierdź");
+                przycisk.appendChild(tresc);
+                var tdd = document.createElement("td");
+                tdd.appendChild(przycisk);
+                
+                
+                rodzic.appendChild(tdd);
+                
+                przycisk.onclick = function zamiana(){
+                  var wybor1 = document.getElementById("wejscie1");
+                   var wybor2 = document.getElementById("wejscie2");
+                    
+                    if(wybor1.value < 1 || wybor2.value < 1 || wybor1.value > localObj.localArray.length || wybor2.value > localObj.localArray.length)
+                        {
+                            alert("Wprowadzono niewłaściwe liczby!");
+                            return;
+                        }
+                
+                   var x = localObj.localArray[wybor1.value - 1];
+                   localObj.localArray[wybor1.value - 1] = localObj.localArray[wybor2.value - 1];
+                   localObj.localArray[wybor2.value - 1] = x;
+                
+                   localStorage.localObj = JSON.stringify(localObj);
+                    
+                   location.reload();
+                }               
+            }
+            
+            function edytuj(){
+                
+                var td = document.createElement("td");
+                var elem = document.createElement("INPUT");
+                elem.setAttribute("type", "text");
+                elem.setAttribute("size", "2");
+                elem.id = "wejscie";
+                td.appendChild(elem);
+                var rodzic = document.getElementById("gora");
+                rodzic.appendChild(td);
+                
+                var button = document.createElement("BUTTON");
+                var tresc = document.createTextNode("zatwierdź");
+                button.appendChild(tresc);
+                
+                var wybor = document.getElementById("wejscie");
+                
+                var tdd = document.createElement("td");
+                tdd.appendChild(button);
+               
+                rodzic.appendChild(tdd);
+                
+                button.onclick = function edycja(){
+                    rodzic.removeChild(td);
+                    rodzic.removeChild(tdd);
+                    
+                if(wybor.value < 1 || wybor.value > localObj.localArray.length)
+                    {
+                        alert("Podano liczbę spoza zakresu!");
+                        return;
+                    }
+                    
+                    var jeden = document.createElement("td");
+                    var naz = document.createElement("INPUT");
+                    naz.setAttribute("type", "text");
+                    naz.setAttribute("size", "7");
+                    naz.setAttribute("value", localObj.localArray[wybor.value - 1].nazwa);
+                    naz.id = "_nazwa";
+                    jeden.appendChild(naz);
+                    rodzic.appendChild(jeden);
+                    
+                    var drugi = document.createElement("td");
+                    var il = document.createElement("INPUT");
+                    il.setAttribute("type", "number");
+                    il.setAttribute("size", "1");
+                    il.setAttribute("value", localObj.localArray[wybor.value - 1].ilosc);
+                    il.id = "_ilosc";
+                    drugi.appendChild(il);
+                    rodzic.appendChild(drugi);
+                    
+                    var trzeci = document.createElement("td");
+                    var ce = document.createElement("INPUT");
+                    ce.setAttribute("type", "number");
+                    ce.setAttribute("size", "1");
+                    ce.setAttribute("value", localObj.localArray[wybor.value - 1].cena);
+                    ce.id = "_cena";
+                    trzeci.appendChild(ce);
+                    rodzic.appendChild(trzeci);
+                    
+                    var buttonn = document.createElement("BUTTON");
+                    var trescc = document.createTextNode("zatwierdź");
+                    buttonn.appendChild(trescc);
+                    
+                    buttonn.onclick = function zapis(){
+                        var zmiana_nazwy = document.getElementById("_nazwa");
+                        var zmiana_ilosci = document.getElementById("_ilosc");
+                        var zmiana_ceny = document.getElementById("_cena");
+                        
+                        if(zmiana_ilosci.value <= 0 || zmiana_ceny.value <= 0)
+                            {
+                                alert("Wartości nie mogą być mniejsze lub równe 0!");
+                                return;
+                            }
+                        localObj.localArray[wybor.value - 1].nazwa = zmiana_nazwy.value;
+                        localObj.localArray[wybor.value - 1].ilosc = zmiana_ilosci.value;
+                        localObj.localArray[wybor.value - 1].cena = zmiana_ceny.value;
+                        
+                        localStorage.localObj = JSON.stringify(localObj);
+                    
+                        location.reload();
+                    }
+                    
+                    var tddd = document.createElement("td");
+                    tddd.appendChild(buttonn);
+               
+                    rodzic.appendChild(tddd);
+                }
+                
+                
+            }
+        </script>
+        
+        <tr id="razem2">
+          <td colspan="4" class="razem">RAZEM</td>
+          <td class="razem"><script> 
+              localObj = {};
+              localObj.localArray = [];
+              localObj = JSON.parse(localStorage.localObj);
+              
+              var suma = 0;
+              
+              for(let i = 0; i < localObj.localArray.length; i++)
+                  {
+                      suma = parseFloat(localObj.localArray[i].ilosc) * parseFloat(localObj.localArray[i].cena) + parseFloat(suma);
+                  }
+              
+              document.write(suma.toFixed(2) + " zł");
+              </script></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+  <form name="formularz">
+    <table>
+      <thead>
+        <tr><td colspan="2">
+          <h2>Nowa pozycja</h2>
+        </td></tr>
+      </thead>
+      <tr>
+        <td>Nazwa:</td>
+        <td><input name="nazwa"></td>
+      </tr>
+      <tr>
+        <td>Ilość:</td>
+        <td><input name="ilosc" type="number"></td>
+      </tr>
+      <tr>
+        <td>Cena:</td>
+        <td><input name="cena" type="number"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="right">
+          <input type="button" value="dodaj" onclick="dodaj()">
+
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>
